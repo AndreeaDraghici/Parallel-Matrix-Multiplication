@@ -3,52 +3,56 @@ package ace.ucv.sequential;
 import ace.ucv.model.Matrix;
 
 /**
- * Clasa responsabila pentru multiplicarea secventiala a doua matrici.
+ * Class responsible for the sequential multiplication of two matrices.
  * <p>
- * Aceasta clasa implementeaza metoda pentru multiplicarea a doua matrici in mod secvential.
+ * This class provides a method for multiplying two matrices sequentially.
+ * The matrices must satisfy the condition that the number of columns in the first matrix
+ * is equal to the number of rows in the second matrix.
  * </p>
  * Created by Andreea Draghici on 10/20/2024
- * Name of project: ParallelMatrixMultiplication
+ * Project name: ParallelMatrixMultiplication
  */
 public class MatrixMultiplication {
 
     /**
-     * Metoda pentru inmultirea a doua matrici.
+     * Method for sequentially multiplying two matrices.
      * <p>
-     * Matricea A trebuie sa aiba numarul de coloane egal cu numarul de randuri al matricei B.
-     * Rezultatul va fi o noua matrice cu dimensiunea (rowsA x colsB).
+     * Multiplication is only possible if the number of columns in the first matrix (matrixA)
+     * matches the number of rows in the second matrix (matrixB). The resulting matrix will have
+     * dimensions (rowsA x colsB).
      * </p>
      *
-     * @param matrixA Prima matrice
-     * @param matrixB A doua matrice
-     * @return O noua matrice rezultata din inmultirea matricilor A si B
-     * @throws IllegalArgumentException Daca matricile nu pot fi inmultite (numarul de coloane al lui A != numarul de randuri al lui B)
+     * @param matrixA The first matrix
+     * @param matrixB The second matrix
+     * @return A new matrix resulting from the multiplication of matrices A and B
+     * @throws IllegalArgumentException If the matrices cannot be multiplied
+     *                                  (number of columns in A != number of rows in B)
      */
     public Matrix multiply(Matrix matrixA, Matrix matrixB) {
-        // Verificam daca inmultirea este posibila
+        // Check if multiplication is possible
         if (matrixA.getCols() != matrixB.getRows()) {
-            throw new IllegalArgumentException("Numarul de coloane al primei matrici trebuie sa fie egal cu numarul de randuri al celei de-a doua.");
+            throw new IllegalArgumentException("The number of columns in the first matrix must be equal to the number of rows in the second.");
         }
 
-        // Dimensiunile matricii rezultat
+        // Dimensions of the resulting matrix
         int rowsA = matrixA.getRows();
         int colsA = matrixA.getCols();
         int colsB = matrixB.getCols();
 
-        // Cream matricea rezultat cu dimensiunea (rowsA x colsB)
+        // Create the result matrix with dimensions (rowsA x colsB)
         int[][] resultData = new int[rowsA][colsB];
 
-        // Inmultim matricile secvential
+        // Sequentially multiply the matrices
         for (int i = 0; i < rowsA; i++) {
             for (int j = 0; j < colsB; j++) {
-                resultData[i][j] = 0;  // Initializam rezultatul la 0
+                resultData[i][j] = 0;  // Initialize the result cell to 0
                 for (int k = 0; k < colsA; k++) {
-                    resultData[i][j] += matrixA.getData()[i][k] * matrixB.getData()[k][j];  // Inmultire secventiala
+                    resultData[i][j] += matrixA.getData()[i][k] * matrixB.getData()[k][j];  // Sequential multiplication
                 }
             }
         }
 
-        // Returnam noua matrice
+        // Return the new matrix
         return new Matrix(resultData, rowsA, colsB);
     }
 }

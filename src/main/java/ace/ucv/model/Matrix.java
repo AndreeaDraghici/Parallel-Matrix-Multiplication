@@ -1,41 +1,41 @@
 package ace.ucv.model;
 
 /**
- * Aceasta clasa reprezinta o matrice cu valori intregi.
+ * This class represents a matrix with integer values.
  * <p>
- * Ofera metode pentru a initializa matricea, a obtine si a seta datele matricii,
- * precum si pentru a returna numarul de randuri si coloane.
+ * Provides methods to initialize the matrix, access and modify matrix data,
+ * and retrieve the number of rows and columns.
  * </p>
- * Creat de Andreea Draghici pe 19/10/2024
- * Nume proiect: ParallelMatrixMultiplication
+ * Created by Andreea Draghici on 19/10/2024
+ * Project name: ParallelMatrixMultiplication
  */
 public class Matrix {
 
-    // Datele matricii stocate intr-un tablou bidimensional de intregi
+    // Matrix data stored in a two-dimensional array of integers
     private int[][] data;
-    // Numarul de randuri din matrice
+    // Number of rows in the matrix
     private int rows;
-    // Numarul de coloane din matrice
+    // Number of columns in the matrix
     private int cols;
 
     /**
-     * Constructor care initializeaza o matrice goala cu dimensiunile specificate.
+     * Constructor that initializes an empty matrix with the specified dimensions.
      *
-     * @param rows numarul de randuri ale matricei
-     * @param cols numarul de coloane ale matricei
+     * @param rows The number of rows in the matrix
+     * @param cols The number of columns in the matrix
      */
     public Matrix(int rows, int cols) {
         this.rows = rows;
         this.cols = cols;
-        this.data = new int[rows][cols]; // Initializeaza un tablou bidimensional cu dimensiunile specificate
+        this.data = new int[rows][cols]; // Initializes a 2D array with the specified dimensions
     }
 
     /**
-     * Constructor care initializeaza o matrice cu datele si dimensiunile date.
+     * Constructor that initializes a matrix with the given data and dimensions.
      *
-     * @param data tabloul bidimensional care contine datele matricii
-     * @param rows numarul de randuri ale matricei
-     * @param cols numarul de coloane ale matricei
+     * @param data A 2D array representing the matrix data
+     * @param rows The number of rows in the matrix
+     * @param cols The number of columns in the matrix
      */
     public Matrix(int[][] data, int rows, int cols) {
         this.data = data;
@@ -44,57 +44,56 @@ public class Matrix {
     }
 
     /**
-     * Returneaza datele matricii ca un tablou bidimensional de intregi.
+     * Returns the matrix data as a 2D array of integers.
      *
-     * @return un tablou bidimensional de intregi care reprezinta datele matricii
+     * @return A 2D array of integers representing the matrix data
      */
     public int[][] getData() {
         return data;
     }
 
     /**
-     * Seteaza datele matricii.
+     * Sets the matrix data.
      *
-     * @param data un tablou bidimensional de intregi care reprezinta datele matricii
+     * @param data A 2D array of integers representing the new matrix data
      */
     public void setData(int[][] data) {
         this.data = data;
     }
 
     /**
-     * Returneaza numarul de randuri din matrice.
+     * Returns the number of rows in the matrix.
      *
-     * @return numarul de randuri
+     * @return The number of rows
      */
     public int getRows() {
         return rows;
     }
 
     /**
-     * Seteaza numarul de randuri din matrice.
+     * Sets the number of rows in the matrix.
      *
-     * @param rows numarul de randuri care trebuie setat
+     * @param rows The number of rows to set
      */
     public void setRows(int rows) {
         this.rows = rows;
     }
 
     /**
-     * Returneaza numarul de coloane din matrice.
+     * Returns the number of columns in the matrix.
      *
-     * @return numarul de coloane
+     * @return The number of columns
      */
     public int getCols() {
         return cols;
     }
 
     /**
-     * Seteaza numarul de coloane din matrice.
+     * Sets the number of columns in the matrix.
      *
-     * @param cols numarul de coloane care trebuie setat
+     * @param cols The number of columns to set
      */
     public void setCols(int cols) {
         this.cols = cols;
     }
-
 }

@@ -2,8 +2,8 @@ plugins {
     id 'java'
 }
 
-group = 'org.example'
-version = '1.0-SNAPSHOT'
+group = 'ace.ucv'
+version = '1.0'
 
 repositories {
     mavenCentral()
@@ -12,6 +12,23 @@ repositories {
 dependencies {
     testImplementation platform('org.junit:junit-bom:5.9.1')
     testImplementation 'org.junit.jupiter:junit-jupiter'
+
+    implementation 'org.apache.logging.log4j:log4j-core:2.19.0'
+    implementation 'org.apache.logging.log4j:log4j-api:2.19.0'
+}
+
+jar {
+    archiveBaseName = "$project.name"
+    manifest {
+        attributes(
+                "Implementation-Title": "$project.name",
+                "Implementation-Version": "$project.version",
+                "Main-Class": "Run"
+        )
+    }
+    from {
+        project.configurations.runtimeClasspath.collect { File file -> project.zipTree(file) }
+    }
 }
 
 test {
