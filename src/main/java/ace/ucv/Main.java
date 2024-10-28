@@ -1,60 +1,46 @@
 package ace.ucv;
 
-import ace.ucv.generator.RandomMatrixGenerator;
-import ace.ucv.model.Matrix;
+import ace.ucv.sequential.RunSequentialApproach;
+import ace.ucv.utils.Constants;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
-import java.nio.file.Path;
+import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Random;
+import java.nio.file.StandardOpenOption;
 
 /**
- * Clasa principala care genereaza si salveaza matrici aleatoare in fisiere text.
+ * Main class that generates and saves random matrices to text files.
  * <p>
- * Aceasta clasa creeaza 10 fisiere, fiecare continand o matrice generata aleator. Dimensiunile matricelor sunt
- * generate aleator (intre 2 si 10 randuri si coloane). Fisierele sunt salvate in directorul "resources".
+ * This class creates a file containing matrix A, matrix B, their multiplication result, and the execution times.
  * </p>
  * Created by Andreea Draghici on 10/19/2024
- * Name of project: ParallelMatrixMultiplication
+ * Project name: ParallelMatrixMultiplication
  */
 public class Main {
+    private static final Logger logger = LogManager.getLogger(Main.class);
 
     /**
-     * Punctul de intrare in aplicatie.
+     * Application entry point.
      * <p>
-     * Aceasta metoda itereaza de 10 ori, generand 10 fisiere separate in care sunt scrise matrici aleatoare.
-     * Dimensiunile matricelor sunt alese aleator pentru fiecare matrice in parte. Fiecare matrice este scrisa
-     * intr-un fisier text in directorul "resources".
+     * This method generates two random matrices, multiplies them, and saves the results to a file.
+     * Execution time for generating matrices, multiplying them, and writing to the file is measured and written to the file.
      * </p>
      *
-     * @param args Argumente din linia de comanda (nu sunt utilizate)
+     * @param args Command line arguments (not used)
      */
     public static void main(String[] args) {
-        runSetup();
+        try {
+            // Clear output file before each run
+            Files.write(Paths.get(Constants.OUTPUT), new byte[0], StandardOpenOption.TRUNCATE_EXISTING);
+            logger.info("Output file cleared successfully.");
+
+            RunSequentialApproach sequentialApproach = new RunSequentialApproach();
+            sequentialApproach.runSetup();
+        } catch (IOException e) {
+            logger.error(String.format("Error reading dimensions file: %s", e.getMessage()));
+        }
     }
 
-    private static void runSetup() {
-        Random rand = new Random();  // Generator de numere aleatoare
-        RandomMatrixGenerator randomMatrixGenerator = new RandomMatrixGenerator();  // Obiect pentru generarea matricelor random
-        MatrixPrinter printer = new MatrixPrinter();  // Obiect pentru a scrie matricea in fisier
-
-
-        // Generare numar aleator de randuri si coloane pentru prima matrice (intre 2 si 10)
-        int rowsA = rand.nextInt(9) + 2;  // Dimensiuni random intre 2 si 10 pentru randuri
-        int colsA = rand.nextInt(9) + 2;  // Dimensiuni random intre 2 si 10 pentru coloane
-
-        int rowsB = rand.nextInt(9) + 2;  // Dimensiuni random intre 2 si 10 pentru randuri
-        int colsB = rand.nextInt(9) + 2;  // Dimensiuni random intre 2 si 10 pentru coloane
-
-        // Generam o matrice random folosind dimensiunile generate
-        Matrix matrixA = randomMatrixGenerator.generateRandomMatrix(rowsA, colsA);
-        Matrix matrixB = randomMatrixGenerator.generateRandomMatrix(rowsB, colsB);
-
-        printer.printMatrix(matrixA);
-        System.out.printf("\n");
-        printer.printMatrix(matrixB);
-
-
-    }
 }
-
