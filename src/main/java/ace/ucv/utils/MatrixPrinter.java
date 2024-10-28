@@ -1,10 +1,11 @@
-package ace.ucv;
+package ace.ucv.utils;
 
 import ace.ucv.model.Matrix;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,32 +42,28 @@ public class MatrixPrinter {
     }
 
     /**
-     * Metoda care scrie matricea intr-un fisier specificat.
-     * <p>
-     * Aceasta metoda creeaza o lista de linii care reprezinta continutul matricii,
-     * apoi scrie fiecare linie in fisierul specificat. Elementele din fiecare rand
-     * al matricii sunt separate prin tab.
-     * </p>
+     * Metoda care scrie matricea si un mesaj in fisierul specificat.
      *
-     * @param matrix   Matricea care va fi scrisa in fisier
+     * @param message Mesajul care descrie ce este matricea (ex. "Matrix A", "Matrix B", "Rezultatul inmultirii")
+     * @param matrix  Matricea care va fi scrisa in fisier
      * @param filePath Calea catre fisierul in care matricea va fi scrisa
      * @throws IOException Daca apare o eroare la scrierea fisierului
      */
-    public void writeMatrixToFile(Matrix matrix, Path filePath) throws IOException {
-        List<String> lines = new ArrayList<>();  // Lista in care vom stoca fiecare rand al matricii ca string
+    public void writeMatrixToFile(String message, Matrix matrix, Path filePath) throws IOException {
+        List<String> lines = new ArrayList<>();
+        lines.add(message);  // Adaugam mesajul la inceput
 
         // Iteram prin fiecare rand al matricii
         for (int i = 0; i < matrix.getRows(); i++) {
-            StringBuilder line = new StringBuilder();  // StringBuilder pentru a construi randul curent
+            StringBuilder line = new StringBuilder();
             for (int j = 0; j < matrix.getCols(); j++) {
-                // Adaugam fiecare element din rand in StringBuilder, urmat de un tab
                 line.append(matrix.getData()[i][j]).append("\t");
             }
-            // Adaugam randul complet in lista de linii
             lines.add(line.toString());
         }
+        lines.add(""); // Linie goala dupa matrice
 
-        // Scriem toate liniile in fisierul specificat
-        Files.write(filePath, lines);
+        // Scriem matricea si mesajul in fisier (se adauga in fisierul deja existent)
+        Files.write(filePath, lines, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
     }
 }
