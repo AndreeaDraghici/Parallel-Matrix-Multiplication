@@ -31,15 +31,13 @@ public class Main {
      * @param args Command line arguments (not used)
      */
     public static void main(String[] args) {
+        RunSequentialApproach approach = new RunSequentialApproach();
         try {
-            // Clear output file before each run
-            Files.write(Paths.get(Constants.OUTPUT), new byte[0], StandardOpenOption.TRUNCATE_EXISTING);
-            logger.info("Output file cleared successfully.");
-
-            RunSequentialApproach sequentialApproach = new RunSequentialApproach();
-            sequentialApproach.runSetup();
+            approach.runSetup();
         } catch (IOException e) {
-            logger.error(String.format("Error reading dimensions file: %s", e.getMessage()));
+            logger.error("Failed to complete matrix operations due to an IO exception: " + e.getMessage());
+        } catch (Exception e) {
+            logger.error("An unexpected error occurred: " + e.getMessage());
         }
     }
 

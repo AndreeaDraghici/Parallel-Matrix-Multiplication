@@ -1,78 +1,39 @@
 package ace.ucv;
 
-import ace.ucv.generator.RandomMatrixGenerator;
+import ace.ucv.service.generator.RandomMatrixGenerator;
 import ace.ucv.model.Matrix;
 import ace.ucv.sequential.MatrixMultiplication;
-import javafx.application.Application;
-import javafx.geometry.Insets;
-import javafx.scene.Scene;
+import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 
 import java.util.Random;
 
-public class MatrixMultiplicationView extends Application {
+public class MatrixMultiplicationView {
 
-    private TextField rowsMinField = new TextField();
-    private TextField rowsMaxField = new TextField();
-    private TextField colsMinField = new TextField();
-    private TextField colsMaxField = new TextField();
-    private TextArea outputArea = new TextArea();
-    private RadioButton sequentialButton = new RadioButton("Sequential");
-    private RadioButton parallelButton = new RadioButton("Parallel");
+    @FXML
+    private TextField rowsMinField;
+    @FXML
+    private TextField rowsMaxField;
+    @FXML
+    private TextField colsMinField;
+    @FXML
+    private TextField colsMaxField;
+    @FXML
+    private TextArea outputArea;
+    @FXML
+    private RadioButton sequentialButton;
+    @FXML
+    private RadioButton parallelButton;
 
-    @Override
-    public void start(Stage primaryStage) {
-        primaryStage.setTitle("Matrix Multiplication App");
-
-        // Layout pentru inputuri
-        GridPane inputGrid = createInputGrid();
-
-        // Radio buttons pentru selectarea metodei
+    @FXML
+    public void initialize() {
         ToggleGroup methodGroup = new ToggleGroup();
         sequentialButton.setToggleGroup(methodGroup);
         parallelButton.setToggleGroup(methodGroup);
         sequentialButton.setSelected(true); // Implicit, metoda secvențială
-
-        // Buton de start pentru începerea calculului
-        Button startButton = new Button("Start Multiplication");
-        startButton.setOnAction(event -> startMultiplication());
-
-        // Output TextArea
-        outputArea.setEditable(false);
-        outputArea.setWrapText(true);
-        outputArea.setPrefHeight(500);
-
-        // Organizarea elementelor într-un VBox
-        VBox root = new VBox(10, inputGrid, sequentialButton, parallelButton, startButton, outputArea);
-        root.setPadding(new Insets(10));
-
-        Scene scene = new Scene(root, 400, 400);
-        primaryStage.setScene(scene);
-        primaryStage.show();
     }
 
-    private GridPane createInputGrid() {
-        GridPane grid = new GridPane();
-        grid.setHgap(10);
-        grid.setVgap(10);
-        grid.setPadding(new Insets(10));
-
-        // Label și TextField pentru dimensiuni minime/maxime
-        grid.add(new Label("Rows Min:"), 0, 0);
-        grid.add(rowsMinField, 1, 0);
-        grid.add(new Label("Rows Max:"), 0, 1);
-        grid.add(rowsMaxField, 1, 1);
-        grid.add(new Label("Cols Min:"), 0, 2);
-        grid.add(colsMinField, 1, 2);
-        grid.add(new Label("Cols Max:"), 0, 3);
-        grid.add(colsMaxField, 1, 3);
-
-        return grid;
-    }
-
+    @FXML
     private void startMultiplication() {
         try {
             // Obțineți valorile introduse de utilizator
@@ -143,9 +104,5 @@ public class MatrixMultiplicationView extends Application {
             sb.append("\n");
         }
         return sb.toString();
-    }
-
-    public static void main(String[] args) {
-        launch(args);
     }
 }
