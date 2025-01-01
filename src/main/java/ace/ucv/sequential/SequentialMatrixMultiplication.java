@@ -12,7 +12,7 @@ import ace.ucv.model.Matrix;
  * Created by Andreea Draghici on 10/20/2024
  * Project name: ParallelMatrixMultiplication
  */
-public class MatrixMultiplication {
+public class SequentialMatrixMultiplication {
 
     /**
      * Method for sequentially multiplying two matrices.
