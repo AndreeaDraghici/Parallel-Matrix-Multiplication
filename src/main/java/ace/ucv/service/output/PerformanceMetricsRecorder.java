@@ -47,4 +47,11 @@ public class PerformanceMetricsRecorder {
             logger.error("Failed to write metrics to Excel file", e);
         }
     }
+    public void saveToFile(String path) throws IOException {
+        try (FileOutputStream fileOut = new FileOutputStream(path)) {
+            workbook.write(fileOut);
+        }
+        workbook.close();
+    }
+
 }

@@ -192,13 +192,14 @@ public class MatrixMultiplicationView {
             File file = fileChooser.showSaveDialog(null);
 
             if (file != null) {
-                metricsRecorder.saveToFile();
+                metricsRecorder.saveToFile(file.getAbsolutePath()); // Pass the selected file path
                 outputArea.setText("Performance metrics saved successfully to " + file.getAbsolutePath());
             }
         } catch (Exception e) {
             outputArea.setText("Failed to save performance metrics: " + e.getMessage());
         }
     }
+
 
     @FXML
     private void exitApplication() {

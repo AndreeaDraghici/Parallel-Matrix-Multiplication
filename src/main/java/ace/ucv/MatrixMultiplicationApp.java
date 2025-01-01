@@ -17,7 +17,8 @@ public class MatrixMultiplicationApp extends Application {
 
             // Set the title and scene
             primaryStage.setTitle("Matrix Multiplication App");
-            primaryStage.setScene(new Scene(root, 400, 500));
+            primaryStage.setScene(new Scene(root, 800, 600));
+            primaryStage.setResizable(false);
             primaryStage.show();
         } catch (Exception e) {
             // Log the exception if the FXML file could not be loaded
