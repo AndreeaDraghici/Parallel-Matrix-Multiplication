@@ -1,4 +1,4 @@
-package ace.ucv.generator;
+package ace.ucv.service.generator;
 
 import java.util.Random;
 
