@@ -2,6 +2,10 @@ package ace.ucv.parallel;
 
 import ace.ucv.model.Matrix;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
 /**
  * Created by Andreea Draghici on 12/25/2024
  * Name of project: ParallelMatrixMultiplication
@@ -25,42 +29,48 @@ public class ParallelMatrixMultiplication {
         int colsB = matrixB.getCols();
         int[][] resultData = new int[rowsA][colsB];
 
-        // Number of threads could be tuned based on the hardware capabilities, or dynamically adjusted
+        // Get the number of available processors to determine the number of threads to use
         int numThreads = Runtime.getRuntime().availableProcessors();
-        Thread[] threads = new Thread[numThreads];
+        // Create a thread pool with a fixed number of threads equal to the number of available processors on the machine
+        ExecutorService executor = Executors.newFixedThreadPool(numThreads);
 
-        // Divide work among threads based on the number of rows in matrix A
+        /**
+         * Divide the work into equal parts for each thread.
+         * Each thread will compute the result for a range of rows in the result matrix.
+         * The number of rows to process is determined by the total number of rows in matrix A divided by the number of threads.
+         * The last thread will process the remaining rows.
+         * The threads will update the result matrix concurrently.
+         * The threads will wait for each other to finish before returning the result.
+         * The threads will be shut down after all tasks are completed.
+         */
         for (int i = 0; i < numThreads; i++) {
-            final int fromRow = i * rowsA / numThreads; // Calculate the starting row for the thread to process
-            final int toRow = (i + 1) * rowsA / numThreads; // Calculate the ending row for the thread to process
+            // Calculate the range of rows to process for each thread
+            final int fromRow = i * rowsA / numThreads;
+            // The last thread will process the remaining rows in the matrix A if the number of rows is not divisible by the number of threads evenly (e.g., 5 rows divided by 2 threads).
+            final int toRow = (i + 1) * rowsA / numThreads;
 
-            /**
-             * Each thread will compute a subset of the rows in the result matrix.
-             * The subset is determined by the 'fromRow' and 'toRow' values.
-             * The thread will iterate over the columns of the result matrix and compute the corresponding cell value.
-             * The cell value is computed by multiplying the corresponding row in matrix A with the corresponding column in matrix B.
+            /*
+             * Submit a task to the executor service to compute the result for the specified range of rows.
+             * The task will be executed concurrently by the threads in the thread pool.
+             * The threads will update the result matrix concurrently. The threads will wait for each other to finish before returning the result.
              */
-            threads[i] = new Thread(() -> {
-                // Compute the result matrix subset for the current thread range of rows and columns (fromRow, toRow) x (0, colsB)
+            executor.submit(() -> {
                 for (int row = fromRow; row < toRow; row++) {
-                    // Iterate over the columns of the result matrix (colsB) and compute the cell value for the current row and column pair
                     for (int col = 0; col < colsB; col++) {
-                        // Initialize the cell value to 0
-                        resultData[row][col] = 0;
                         for (int k = 0; k < matrixA.getCols(); k++) {
                             resultData[row][col] += matrixA.getData()[row][k] * matrixB.getData()[k][col];
                         }
                     }
                 }
             });
-            threads[i].start();
         }
 
-        // Wait for all threads to complete
-        for (Thread thread : threads) {
-            thread.join();
-        }
+        // Shut down the executor service after all tasks are completed
+        executor.shutdown();
+        // Wait for all tasks to complete before returning the result
+        executor.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
 
         return new Matrix(resultData, rowsA, colsB);
     }
+
 }

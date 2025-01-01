@@ -1,56 +1,82 @@
 package ace.ucv;
 
-import ace.ucv.sequential.RunSequentialApproach;
+import ace.ucv.model.Matrix;
 import ace.ucv.parallel.RunParallelApproach;
-import ace.ucv.utils.Constants;
+import ace.ucv.sequential.RunSequentialApproach;
+import ace.ucv.sequential.RunStrassenApproach;
+import ace.ucv.service.MatrixService;
+import ace.ucv.service.parser.DimensionManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
-/**
- * Main class that generates and saves random matrices to text files.
- * <p>
- * This class creates a file containing matrix A, matrix B, their multiplication results, and the execution times.
- * </p>
- * Created by Andreea Draghici on 10/19/2024
- * Project name: ParallelMatrixMultiplication
- */
 public class Main {
     private static final Logger logger = LogManager.getLogger(Main.class);
 
-    /**
-     * Application entry point.
-     * <p>
-     * This method runs both the sequential and parallel approaches for matrix multiplication.
-     * Execution times and results are saved for each approach.
-     * </p>
-     *
-     * @param args Command line arguments (not used)
-     */
     public static void main(String[] args) {
-        // Run the sequential approach
-        RunSequentialApproach sequentialApproach = new RunSequentialApproach();
-        try {
-            logger.info("Starting sequential matrix multiplication...");
-            sequentialApproach.runSetup();
-            logger.info("Sequential matrix multiplication completed.");
-        } catch (IOException e) {
-            logger.error("Failed to complete sequential matrix operations due to an IO exception: " + e.getMessage());
-        } catch (Exception e) {
-            logger.error("An unexpected error occurred during sequential approach: " + e.getMessage());
-        }
+        DimensionManager dimensionManager = new DimensionManager();
+        MatrixService matrixService = new MatrixService();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+            while (true) {
+                System.out.println("Select a matrix multiplication method:");
+                System.out.println("1. Sequential");
+                System.out.println("2. Parallel");
+                System.out.println("3. Strassen");
+                System.out.println("4. Exit");
+                System.out.print("Enter your choice: ");
 
-        // Run the parallel approach
-        RunParallelApproach parallelApproach = new RunParallelApproach();
-        try {
-            logger.info("Starting parallel matrix multiplication...");
-            parallelApproach.runSetup();
-            logger.info("Parallel matrix multiplication completed.");
-        } catch (IOException | InterruptedException e) {
-            logger.error(new StringBuilder().append("Failed to complete parallel matrix operations due to an exception: ").append(e.getMessage()).toString());
-        } catch (Exception e) {
-            logger.error(new StringBuilder().append("An unexpected error occurred during parallel approach: ").append(e.getMessage()).toString());
+                String choice = reader.readLine().trim();
+                // Exit the program if the user chooses to do so (option 4)
+                if (choice.equals("4")) {
+                    System.out.println("Exiting the program.");
+                    break;
+                }
+
+                try {
+                    // Generate matrices based on the dimensions from the dimension manager
+                    Matrix[] matrices = matrixService.generateMatrices(
+                            dimensionManager.getDimensions().get("rowsMin"),
+                            dimensionManager.getDimensions().get("rowsMax"),
+                            dimensionManager.getDimensions().get("colsMin"),
+                            dimensionManager.getDimensions().get("colsMax")
+                    );
+
+                    /* Perform matrix multiplication based on the user's choice */
+                    switch (choice) {
+                        case "1":
+                            logger.info("Starting sequential matrix multiplication...");
+                            RunSequentialApproach sequentialApproach = new RunSequentialApproach();
+                            sequentialApproach.runSetup(matrices[0], matrices[1]);
+                            logger.info("Sequential matrix multiplication completed.");
+                            break;
+
+                        case "2":
+                            logger.info("Starting parallel matrix multiplication...");
+                            RunParallelApproach parallelApproach = new RunParallelApproach();
+                            parallelApproach.runSetup(matrices[0], matrices[1]);
+                            logger.info("Parallel matrix multiplication completed.");
+                            break;
+
+                        case "3":
+                            logger.info("Starting Strassen matrix multiplication...");
+                            RunStrassenApproach strassenApproach = new RunStrassenApproach();
+                            strassenApproach.runSetup(matrices[0], matrices[1]);
+                            logger.info("Strassen matrix multiplication completed.");
+                            break;
+
+                        default:
+                            System.out.println("Invalid choice. Please enter a number between 1 and 4.");
+                            break;
+                    }
+                } catch (Exception e) {
+                    logger.error("An error occurred during matrix multiplication: " + e.getMessage());
+                }
+            }
+        } catch (IOException e) {
+            logger.error("An error occurred while reading input: " + e.getMessage());
         }
     }
 }

@@ -2,6 +2,7 @@ package ace.ucv.service;
 
 import ace.ucv.model.Matrix;
 import ace.ucv.sequential.SequentialMatrixMultiplication;
+import ace.ucv.sequential.StrassenMatrixMultiplication;
 import ace.ucv.service.generator.RandomMatrixGenerator;
 
 import java.util.Random;
@@ -13,7 +14,8 @@ import java.util.Random;
 public class MatrixService {
     private final Random rand = new Random();
     private final RandomMatrixGenerator matrixGenerator = new RandomMatrixGenerator();
-    private final SequentialMatrixMultiplication multiplication = new SequentialMatrixMultiplication();
+    private final SequentialMatrixMultiplication sequentialMultiplication = new SequentialMatrixMultiplication();
+    private final StrassenMatrixMultiplication strassenMultiplication = new StrassenMatrixMultiplication();
 
     /**
      * Generate two random matrices with dimensions within the specified range.
@@ -33,7 +35,10 @@ public class MatrixService {
         return new Matrix[]{matrixA, matrixB};
     }
 
-    public Matrix multiplyMatrices(Matrix a, Matrix b, boolean useStrassen) {
-        return useStrassen ? multiplication.strassenMultiply(a, b) : multiplication.multiply(a, b);
+    public Matrix multiplySequentialMatrices(Matrix a, Matrix b) {
+        return sequentialMultiplication.multiply(a, b);
+    }
+    public Matrix multiplyStrassenMatrices(Matrix a, Matrix b) {
+        return strassenMultiplication.multiply(a, b);
     }
 }

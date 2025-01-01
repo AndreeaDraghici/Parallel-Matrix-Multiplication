@@ -26,8 +26,9 @@
 
     <!-- Radio Buttons for Method Selection -->
     <HBox spacing="10">
-        <RadioButton fx:id="sequentialButton" text="Sequential"/>
+        <RadioButton fx:id="classicSequentialButton" text="Sequential"/>
         <RadioButton fx:id="parallelButton" text="Parallel"/>
+        <RadioButton fx:id="strassenButton" text="Parallel Stream"/>
     </HBox>
 
     <!-- Start Button -->

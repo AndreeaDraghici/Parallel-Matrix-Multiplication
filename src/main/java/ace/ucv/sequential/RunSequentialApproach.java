@@ -1,16 +1,13 @@
 package ace.ucv.sequential;
 
 import ace.ucv.model.Matrix;
-import ace.ucv.service.MatrixService;
 import ace.ucv.service.output.MatrixPrinter;
 import ace.ucv.service.output.PerformanceMetricsRecorder;
-import ace.ucv.service.parser.DimensionManager;
 import ace.ucv.utils.Constants;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Map;
 
 import static ace.ucv.utils.Constants.SEQUENTIAL_XLSX;
 
@@ -20,9 +17,7 @@ import static ace.ucv.utils.Constants.SEQUENTIAL_XLSX;
  */
 public class RunSequentialApproach {
 
-
-    private final DimensionManager dimensionManager = new DimensionManager();
-    private final MatrixService matrixService = new MatrixService();
+    private final SequentialMatrixMultiplication sequentialMultiplication = new SequentialMatrixMultiplication();
     private final MatrixPrinter printer = new MatrixPrinter();
     private final PerformanceMetricsRecorder metricsRecorder;
 
@@ -36,39 +31,24 @@ public class RunSequentialApproach {
 
     /**
      * Run the setup for the sequential approach.
+     *
      * @throws IOException If an I/O error occurs.
      */
-    public void runSetup() throws IOException {
-        Map<String, Integer> dimensions = dimensionManager.getDimensions();
-
+    public void runSetup(Matrix matrixA, Matrix matrixB) throws IOException {
+        // Start metrics for multiplication
         long startTime = System.nanoTime();
-        Matrix[] matrices = matrixService.generateMatrices(
-                dimensions.get("rowsMin"), dimensions.get("rowsMax"),
-                dimensions.get("colsMin"), dimensions.get("colsMax")
-        );
+        Matrix result = sequentialMultiplication.multiply(matrixA, matrixB);
         long endTime = System.nanoTime();
-        metricsRecorder.recordMetric("Timings", "Matrix Generation Time", (endTime - startTime) / 1_000_000_000.0);
-
-        // Classic multiplication
-        startTime = System.nanoTime();
-        Matrix result = matrixService.multiplyMatrices(matrices[0], matrices[1], false);
-        endTime = System.nanoTime();
         metricsRecorder.recordMetric("Timings", "Classic Multiplication Time", (endTime - startTime) / 1_000_000_000.0);
 
-        // Strassen multiplication
-        startTime = System.nanoTime();
-        Matrix strassenResult = matrixService.multiplyMatrices(matrices[0], matrices[1], true);
-        endTime = System.nanoTime();
-        metricsRecorder.recordMetric("Timings", "Strassen Multiplication Time", (endTime - startTime) / 1_000_000_000.0);
-
-        // Write results to file
-        final Path filePath = Paths.get(Constants.OUTPUT_SEQUENTIAL);
-        printer.writeMatrixToFile("Matrix A:", matrices[0], filePath);
-        printer.writeMatrixToFile("Matrix B:", matrices[1], filePath);
+        // Write results to distinct file
+        Path filePath = Paths.get(Constants.OUTPUT_SEQUENTIAL);
+        printer.writeMatrixToFile("Matrix A:", matrixA, filePath);
+        printer.writeMatrixToFile("Matrix B:", matrixB, filePath);
         printer.writeMatrixToFile("Classic Multiplication Result:", result, filePath);
-        printer.writeMatrixToFile("Strassen Multiplication Result:", strassenResult, filePath);
 
-        // Save all recorded metrics to the Excel file
+        // Save metrics
         metricsRecorder.saveToFile();
     }
+
 }
