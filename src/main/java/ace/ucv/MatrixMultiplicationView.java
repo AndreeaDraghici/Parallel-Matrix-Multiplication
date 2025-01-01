@@ -1,20 +1,31 @@
 package ace.ucv;
 
+import ace.ucv.model.Matrix;
 import ace.ucv.parallel.ParallelMatrixMultiplication;
 import ace.ucv.sequential.StrassenMatrixMultiplication;
-import ace.ucv.service.generator.RandomMatrixGenerator;
-import ace.ucv.model.Matrix;
 import ace.ucv.sequential.SequentialMatrixMultiplication;
+import ace.ucv.service.generator.RandomMatrixGenerator;
+import ace.ucv.service.output.MatrixPrinter;
+import ace.ucv.service.output.PerformanceMetricsRecorder;
 import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.stage.FileChooser;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Random;
 
 public class MatrixMultiplicationView {
 
     @FXML
-    public RadioButton strassenButton;
+    private RadioButton classicSequentialButton;
+    @FXML
+    private RadioButton parallelButton;
+    @FXML
+    private RadioButton strassenButton;
     @FXML
     private TextField rowsMinField;
     @FXML
@@ -26,9 +37,14 @@ public class MatrixMultiplicationView {
     @FXML
     private TextArea outputArea;
     @FXML
-    private RadioButton classicSequentialButton;
+    private TabPane tabPane;
     @FXML
-    private RadioButton parallelButton;
+    private Tab outputTab;
+    @FXML
+    private Tab saveTab;
+
+    private final MatrixPrinter printer = new MatrixPrinter();
+    private final PerformanceMetricsRecorder metricsRecorder = new PerformanceMetricsRecorder("performance_metrics.xlsx");
 
     @FXML
     public void initialize() {
@@ -36,79 +52,72 @@ public class MatrixMultiplicationView {
         classicSequentialButton.setToggleGroup(methodGroup);
         parallelButton.setToggleGroup(methodGroup);
         strassenButton.setToggleGroup(methodGroup);
-        classicSequentialButton.setSelected(true); // Implicit, metoda secvențială
+
+        classicSequentialButton.setSelected(true); // Default to Sequential Method
     }
 
     @FXML
     private void startMultiplication() {
         try {
-            // Obțineți valorile introduse de utilizator
+            // Get input values
             int rowsMin = Integer.parseInt(rowsMinField.getText());
             int rowsMax = Integer.parseInt(rowsMaxField.getText());
             int colsMin = Integer.parseInt(colsMinField.getText());
             int colsMax = Integer.parseInt(colsMaxField.getText());
 
-            // Verifică ce metodă a fost selectată
-            String method;
-            if (classicSequentialButton.isSelected()) {
-                method = "Sequential";
-            } else if (parallelButton.isSelected()) {
-                method = "Parallel";
-            } else if (strassenButton.isSelected()) {
-                method = "Strassen";
-            } else {
-                throw new IllegalStateException("No method selected.");
+            String selectedMethod = getSelectedMethod();
+
+            // Validate method selection
+            if (selectedMethod == null) {
+                outputArea.setText("No method selected. Please choose a method.");
+                return;
             }
 
-            // Creează un task pentru a evita blocarea UI
+            // Create a Task for computation
             Task<String> multiplicationTask = new Task<String>() {
                 @Override
-                protected String call() throws Exception {
-                    return multiplyMatrices(rowsMin, rowsMax, colsMin, colsMax, method);
+                protected String call() {
+                    long startTime = System.nanoTime();
+                    String result = performMultiplication(rowsMin, rowsMax, colsMin, colsMax, selectedMethod);
+                    long endTime = System.nanoTime();
+
+                    double executionTime = (endTime - startTime) / 1_000_000_000.0;
+                    metricsRecorder.recordMetric("Timings", selectedMethod + " Execution Time", executionTime);
+                    result += "\nExecution Time: " + executionTime + " seconds";
+                    return result;
                 }
             };
 
-            // Când task-ul este finalizat, actualizează UI-ul
-            multiplicationTask.setOnSucceeded(event -> outputArea.setText("Method: " + method + "\n" + multiplicationTask.getValue()));
-
-            // În cazul unei erori, afișează mesajul
+            // Set Task event handlers
+            multiplicationTask.setOnSucceeded(event -> outputArea.setText(multiplicationTask.getValue()));
             multiplicationTask.setOnFailed(event -> outputArea.setText("An error occurred: " + multiplicationTask.getException().getMessage()));
 
-            // Rulează task-ul pe un thread separat
+            // Run the Task on a new Thread
             new Thread(multiplicationTask).start();
-
         } catch (NumberFormatException e) {
-            outputArea.setText("Please enter valid integer values for rows and columns.");
-        } catch (Exception e) {
-            outputArea.setText("An error occurred: " + e.getMessage());
+            outputArea.setText("Invalid input. Please enter valid integers for rows and columns.");
         }
     }
 
+    private String getSelectedMethod() {
+        if (classicSequentialButton.isSelected()) return "Sequential";
+        if (parallelButton.isSelected()) return "Parallel";
+        if (strassenButton.isSelected()) return "Strassen";
+        return null;
+    }
 
-    /**
-     * Multiply two matrices using the specified method.
-     *
-     * @param rowsMin The minimum number of rows for the matrices
-     * @param rowsMax The maximum number of rows for the matrices
-     * @param colsMin The minimum number of columns for the matrices
-     * @param colsMax The maximum number of columns for the matrices
-     * @param method  The method to use for multiplication
-     * @return The result of the multiplication as a string
-     */
-    private String multiplyMatrices(int rowsMin, int rowsMax, int colsMin, int colsMax, String method) {
-        // Generarea dimensiunilor random pentru matrici, folosind valorile min/max
-        Random rand = new Random();
-        int rowsA = rand.nextInt(rowsMax - rowsMin + 1) + rowsMin;
-        int colsA = rand.nextInt(colsMax - colsMin + 1) + colsMin;
-        int rowsB = colsA;  // nr de randuri B = nr de coloane A pentru înmulțire
-        int colsB = rand.nextInt(colsMax - colsMin + 1) + colsMin;
+    private String performMultiplication(int rowsMin, int rowsMax, int colsMin, int colsMax, String method) {
+        // Generate random dimensions for matrices
+        Random random = new Random();
+        int rowsA = random.nextInt(rowsMax - rowsMin + 1) + rowsMin;
+        int colsA = random.nextInt(colsMax - colsMin + 1) + colsMin;
+        int rowsB = colsA;  // Ensuring matrix multiplication is valid
+        int colsB = random.nextInt(colsMax - colsMin + 1) + colsMin;
 
-        // Generarea matricelor A și B
         RandomMatrixGenerator generator = new RandomMatrixGenerator();
         Matrix matrixA = generator.generateRandomMatrix(rowsA, colsA);
         Matrix matrixB = generator.generateRandomMatrix(rowsB, colsB);
 
-        // Calcularea produsului
         Matrix result;
         switch (method) {
             case "Sequential":
@@ -121,7 +130,7 @@ public class MatrixMultiplicationView {
                 try {
                     result = parallelMultiplication.multiply(matrixA, matrixB);
                 } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+                    throw new RuntimeException("Parallel multiplication interrupted.", e);
                 }
                 break;
 
@@ -131,54 +140,79 @@ public class MatrixMultiplicationView {
                 break;
 
             default:
-                throw new IllegalStateException("Unknown method: " + method);
+                throw new IllegalArgumentException("Unknown method: " + method);
         }
 
-        StringBuilder sb = getTextAreaOutput(rowsA, colsA, matrixA, rowsB, colsB, matrixB, result);
+        return formatOutput(matrixA, matrixB, result);
+    }
 
+    private String formatOutput(Matrix matrixA, Matrix matrixB, Matrix result) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Matrix A:\n").append(matrixToString(matrixA)).append("\n");
+        sb.append("Matrix B:\n").append(matrixToString(matrixB)).append("\n");
+        sb.append("Result:\n").append(matrixToString(result));
         return sb.toString();
     }
 
-    /**
-     * Compute the result as a text area output for the UI.
-     *
-     * @param rowsA   The number of rows in matrix A
-     * @param colsA   The number of columns in matrix A
-     * @param matrixA The first matrix
-     * @param rowsB   The number of rows in matrix B
-     * @param colsB   The number of columns in matrix B
-     * @param matrixB The second matrix
-     * @param result  The result matrix
-     * @return The result as a string builder for the text area
-     */
-    private StringBuilder getTextAreaOutput(int rowsA, int colsA, Matrix matrixA, int rowsB, int colsB, Matrix matrixB, Matrix result) {
-
-        StringBuilder sb = new StringBuilder();
-        sb.append("Matrix A (").append(rowsA).append("x").append(colsA).append("):\n");
-        sb.append(matrixToString(matrixA)).append("\n");
-
-        sb.append("Matrix B (").append(rowsB).append("x").append(colsB).append("):\n");
-        sb.append(matrixToString(matrixB)).append("\n");
-
-        sb.append("Result (").append(rowsA).append("x").append(colsB).append("):\n");
-        sb.append(matrixToString(result));
-        return sb;
-    }
-
-    /**
-     * Convert a matrix to a string representation.
-     *
-     * @param matrix The matrix to convert
-     * @return The string representation of the matrix data in tabular form (rows separated by new lines)
-     */
     private String matrixToString(Matrix matrix) {
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < matrix.getRows(); i++) {
-            for (int j = 0; j < matrix.getCols(); j++) {
-                sb.append(matrix.getData()[i][j]).append("\t");
+        for (int[] row : matrix.getData()) {
+            for (int value : row) {
+                sb.append(value).append("\t");
             }
             sb.append("\n");
         }
         return sb.toString();
     }
+
+    @FXML
+    private void saveOutputToFile() {
+        try {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Save Output");
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text Files", "*.txt"));
+            File file = fileChooser.showSaveDialog(null);
+
+            if (file != null) {
+                Files.write(file.toPath(), outputArea.getText().getBytes());
+                outputArea.appendText("\nOutput saved successfully to " + file.getAbsolutePath());
+            }
+        } catch (Exception e) {
+            outputArea.appendText("\nError saving output: " + e.getMessage());
+        }
+    }
+
+
+    @FXML
+    private void savePerformanceMetrics() {
+        try {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Save Performance Metrics");
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Excel Files", "*.xlsx"));
+            File file = fileChooser.showSaveDialog(null);
+
+            if (file != null) {
+                metricsRecorder.saveToFile();
+                outputArea.setText("Performance metrics saved successfully to " + file.getAbsolutePath());
+            }
+        } catch (Exception e) {
+            outputArea.setText("Failed to save performance metrics: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void exitApplication() {
+        // Confirm before exiting the application
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Exit Confirmation");
+        alert.setHeaderText("Are you sure you want to exit?");
+        alert.setContentText("Any unsaved progress will be lost.");
+
+        // Show confirmation dialog
+        if (alert.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
+            // Close the application
+            System.exit(0);
+        }
+    }
+
 }

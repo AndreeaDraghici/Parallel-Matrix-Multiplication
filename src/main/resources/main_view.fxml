@@ -1,39 +1,66 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="ace.ucv.MatrixMultiplicationView" spacing="10" alignment="TOP_CENTER">
-    <padding>
-        <Insets top="10" right="10" bottom="10" left="10"/>
-    </padding>
+<BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="ace.ucv.MatrixMultiplicationView">
+    <!-- Top Menu -->
+    <top>
+        <MenuBar>
+            <Menu text="File">
+                <MenuItem text="Exit" onAction="#exitApplication"/>
+            </Menu>
+        </MenuBar>
+    </top>
 
-    <!-- GridPane for Input Fields -->
-    <GridPane hgap="10" vgap="10">
-        <Label text="Rows Min:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-        <TextField fx:id="rowsMinField" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+    <!-- Center Tab Pane -->
+    <center>
+        <TabPane fx:id="tabPane">
+            <!-- Output Tab -->
+            <Tab text="Output" fx:id="outputTab" closable="false">
+                <VBox spacing="10" alignment="CENTER" style="-fx-padding: 10;">
+                    <Label text="Matrix Multiplication Output"/>
+                    <TextArea fx:id="outputArea" editable="false" wrapText="true"/>
+                </VBox>
+            </Tab>
 
-        <Label text="Rows Max:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-        <TextField fx:id="rowsMaxField" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+            <!-- Save Options Tab -->
+            <Tab text="Save" fx:id="saveTab" closable="false">
+                <VBox spacing="10" alignment="CENTER" style="-fx-padding: 10;">
+                    <Label text="Save Options"/>
+                    <Button text="Save Output to Text File" onAction="#saveOutputToFile"/>
+                    <Button text="Save Performance Metrics to Excel" onAction="#savePerformanceMetrics"/>
+                </VBox>
+            </Tab>
+        </TabPane>
+    </center>
 
-        <Label text="Cols Min:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-        <TextField fx:id="colsMinField" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
-
-        <Label text="Cols Max:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-        <TextField fx:id="colsMaxField" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
-    </GridPane>
-
-    <!-- Radio Buttons for Method Selection -->
-    <HBox spacing="10">
-        <RadioButton fx:id="classicSequentialButton" text="Sequential"/>
-        <RadioButton fx:id="parallelButton" text="Parallel"/>
-        <RadioButton fx:id="strassenButton" text="Parallel Stream"/>
-    </HBox>
-
-    <!-- Start Button -->
-    <Button text="Start Multiplication" onAction="#startMultiplication"/>
-
-    <!-- Output TextArea -->
-    <TextArea fx:id="outputArea" editable="false" wrapText="true" prefHeight="500"/>
-</VBox>
+    <!-- Bottom Input Area -->
+    <bottom>
+        <VBox spacing="10" style="-fx-padding: 10;">
+            <HBox spacing="10" alignment="CENTER">
+                <Label text="Rows Min:"/>
+                <TextField fx:id="rowsMinField"/>
+                <Label text="Rows Max:"/>
+                <TextField fx:id="rowsMaxField"/>
+            </HBox>
+            <HBox spacing="10" alignment="CENTER">
+                <Label text="Cols Min:"/>
+                <TextField fx:id="colsMinField"/>
+                <Label text="Cols Max:"/>
+                <TextField fx:id="colsMaxField"/>
+            </HBox>
+            <HBox spacing="10" alignment="CENTER">
+                <Label text="Method:"/>
+                <VBox spacing="5">
+                    <RadioButton fx:id="classicSequentialButton" text="Sequential"/>
+                    <RadioButton fx:id="parallelButton" text="Parallel"/>
+                    <RadioButton fx:id="strassenButton" text="Strassen"/>
+                </VBox>
+            </HBox>
+            <HBox spacing="10" alignment="CENTER">
+                <Button text="Start Multiplication" onAction="#startMultiplication"/>
+            </HBox>
+        </VBox>
+    </bottom>
+</BorderPane>
