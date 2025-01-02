@@ -1,4 +1,4 @@
-package ace.ucv.sequential;
+package ace.ucv.strassen;
 
 import ace.ucv.model.Matrix;
 import ace.ucv.utils.MatrixUtility;

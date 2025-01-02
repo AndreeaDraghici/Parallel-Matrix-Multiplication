@@ -2,20 +2,18 @@ package ace.ucv;
 
 import ace.ucv.model.Matrix;
 import ace.ucv.parallel.ParallelMatrixMultiplication;
-import ace.ucv.sequential.StrassenMatrixMultiplication;
+import ace.ucv.strassen.StrassenMatrixMultiplication;
 import ace.ucv.sequential.SequentialMatrixMultiplication;
 import ace.ucv.service.generator.RandomMatrixGenerator;
 import ace.ucv.service.output.MatrixPrinter;
 import ace.ucv.service.output.PerformanceMetricsRecorder;
 import javafx.concurrent.Task;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
 
 import java.io.File;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Random;
 
 public class MatrixMultiplicationView {

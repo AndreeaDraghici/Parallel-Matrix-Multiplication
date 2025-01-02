@@ -1,9 +1,8 @@
-package ace.ucv.sequential;
+package ace.ucv.strassen;
 
 import ace.ucv.model.Matrix;
 import ace.ucv.service.output.MatrixPrinter;
 import ace.ucv.service.output.PerformanceMetricsRecorder;
-import ace.ucv.service.parser.DimensionManager;
 import ace.ucv.utils.Constants;
 import ace.ucv.utils.MatrixUtility;
 
