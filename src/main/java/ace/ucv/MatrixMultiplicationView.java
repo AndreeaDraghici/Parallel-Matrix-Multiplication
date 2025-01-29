@@ -1,9 +1,9 @@
 package ace.ucv;
 
 import ace.ucv.model.Matrix;
-import ace.ucv.parallel.ParallelMatrixMultiplication;
-import ace.ucv.strassen.StrassenMatrixMultiplication;
-import ace.ucv.sequential.SequentialMatrixMultiplication;
+import ace.ucv.approach.parallel.ParallelMatrixMultiplication;
+import ace.ucv.approach.strassen.StrassenMatrixMultiplication;
+import ace.ucv.approach.sequential.SequentialMatrixMultiplication;
 import ace.ucv.service.generator.RandomMatrixGenerator;
 import ace.ucv.service.output.MatrixPrinter;
 import ace.ucv.service.output.PerformanceMetricsRecorder;
@@ -79,7 +79,8 @@ public class MatrixMultiplicationView {
                     String result = performMultiplication(rowsMin, rowsMax, colsMin, colsMax, selectedMethod);
                     long endTime = System.nanoTime();
 
-                    double executionTime = (endTime - startTime) / 1_000_000_000.0;
+                    double executionTime = (double) (endTime - startTime) / 1_000_000;
+
                     metricsRecorder.recordMetric("Timings", selectedMethod + " Execution Time", executionTime);
                     result += "\nExecution Time: " + executionTime + " seconds";
                     return result;
@@ -103,6 +104,8 @@ public class MatrixMultiplicationView {
         if (strassenButton.isSelected()) return "Strassen";
         return null;
     }
+
+
 
     private String performMultiplication(int rowsMin, int rowsMax, int colsMin, int colsMax, String method) {
         // Generate random dimensions for matrices

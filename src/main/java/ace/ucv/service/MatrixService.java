@@ -1,8 +1,8 @@
 package ace.ucv.service;
 
 import ace.ucv.model.Matrix;
-import ace.ucv.sequential.SequentialMatrixMultiplication;
-import ace.ucv.strassen.StrassenMatrixMultiplication;
+import ace.ucv.approach.sequential.SequentialMatrixMultiplication;
+import ace.ucv.approach.strassen.StrassenMatrixMultiplication;
 import ace.ucv.service.generator.RandomMatrixGenerator;
 
 import java.util.Random;
