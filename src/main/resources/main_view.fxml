@@ -1,39 +1,99 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="ace.ucv.MatrixMultiplicationView" spacing="10" alignment="TOP_CENTER">
-    <padding>
-        <Insets top="10" right="10" bottom="10" left="10"/>
-    </padding>
+<BorderPane style="-fx-background-color: #DCDCDC;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ace.ucv.MatrixMultiplicationView">
+    <!-- Top MenuBar -->
+    <top>
+        <VBox>
+            <MenuBar>
+                <Menu text="Options Menu">
+                    <MenuItem onAction="#saveOutputToFile" text="Save Output to Text File" />
+                    <MenuItem onAction="#savePerformanceMetrics" text="Save Performance Metrics to Excel" />
+                    <SeparatorMenuItem />
+                    <MenuItem onAction="#exitApplication" text="Exit" />
+                </Menu>
+            </MenuBar>
 
-    <!-- GridPane for Input Fields -->
-    <GridPane hgap="10" vgap="10">
-        <Label text="Rows Min:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-        <TextField fx:id="rowsMinField" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+            <!-- Input Area Below MenuBar -->
+            <VBox spacing="10" style="-fx-padding: 10;">
+                <HBox alignment="CENTER" spacing="10">
+                    <Label text="Rows Min:" textFill="#f40606">
+                  <font>
+                     <Font name="System Bold" size="14.0" />
+                  </font></Label>
+                    <TextField fx:id="rowsMinField" />
+                    <Label text="Rows Max:" textFill="#ff0101">
+                  <font>
+                     <Font name="System Bold" size="14.0" />
+                  </font></Label>
+                    <TextField fx:id="rowsMaxField" />
+                </HBox>
+                <HBox alignment="CENTER" spacing="10">
+                    <Label text="Cols Min:" textFill="RED">
+                  <font>
+                     <Font name="System Bold" size="14.0" />
+                  </font></Label>
+                    <TextField fx:id="colsMinField" />
+                    <Label text="Cols Max:" textFill="RED">
+                  <font>
+                     <Font name="System Bold" size="14.0" />
+                  </font></Label>
+                    <TextField fx:id="colsMaxField" />
+                </HBox>
+                <HBox alignment="CENTER" spacing="10">
+                    <Label prefHeight="20.0" prefWidth="122.0" text="Algorithm Choice">
+                  <font>
+                     <Font name="System Bold" size="14.0" />
+                  </font></Label>
+                    <VBox spacing="5">
+                        <RadioButton fx:id="classicSequentialButton" text="Sequential Approach" textFill="#1800ef">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font></RadioButton>
+                        <RadioButton fx:id="parallelButton" text="Parallel Approach" textFill="#1800ef">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font></RadioButton>
+                        <RadioButton fx:id="strassenButton" text="Strassen Approach" textFill="#1800ef">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font></RadioButton>
+                    </VBox>
+                </HBox>
+                <HBox alignment="CENTER" spacing="10">
+                    <Button onAction="#startMultiplication" text="Start Multiplication" textAlignment="CENTER">
+                  <font>
+                     <Font name="System Bold" size="14.0" />
+                  </font></Button>
+                </HBox>
+            </VBox>
+        </VBox>
+    </top>
 
-        <Label text="Rows Max:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-        <TextField fx:id="rowsMaxField" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
-
-        <Label text="Cols Min:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-        <TextField fx:id="colsMinField" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
-
-        <Label text="Cols Max:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-        <TextField fx:id="colsMaxField" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
-    </GridPane>
-
-    <!-- Radio Buttons for Method Selection -->
-    <HBox spacing="10">
-        <RadioButton fx:id="classicSequentialButton" text="Sequential"/>
-        <RadioButton fx:id="parallelButton" text="Parallel"/>
-        <RadioButton fx:id="strassenButton" text="Parallel Stream"/>
-    </HBox>
-
-    <!-- Start Button -->
-    <Button text="Start Multiplication" onAction="#startMultiplication"/>
-
-    <!-- Output TextArea -->
-    <TextArea fx:id="outputArea" editable="false" wrapText="true" prefHeight="500"/>
-</VBox>
+    <!-- Bottom Output Area -->
+    <bottom>
+        <VBox spacing="10" style="-fx-padding: 10;">
+            <Label text="Matrix Multiplication Output" textFill="#054814">
+            <font>
+               <Font name="System Bold" size="14.0" />
+            </font></Label>
+            <TextArea fx:id="outputArea" editable="false" style="-fx-font-size: 14; -fx-pref-height: 300;" wrapText="true" VBox.vgrow="ALWAYS">
+            <font>
+               <Font size="14.0" />
+            </font></TextArea>
+        </VBox>
+    </bottom>
+</BorderPane>

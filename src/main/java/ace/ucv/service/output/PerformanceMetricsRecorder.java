@@ -19,11 +19,21 @@ public class PerformanceMetricsRecorder {
     private XSSFWorkbook workbook;
     private String filePath;
 
+    /**
+     * Creates a new instance of PerformanceMetricsRecorder.
+     * @param filePath the path to the Excel file where the metrics will be recorded.
+     */
     public PerformanceMetricsRecorder(String filePath) {
         this.filePath = filePath;
         this.workbook = new XSSFWorkbook();
     }
 
+    /**
+     * Records a metric in the Excel file.
+     * @param sheetName the name of the sheet where the metric will be recorded.
+     * @param metricDescription the description of the metric.
+     * @param value the value of the metric.
+     */
     public void recordMetric(String sheetName, String metricDescription, double value) {
         Sheet sheet = workbook.getSheet(sheetName);
         if (sheet == null) {
@@ -39,6 +49,9 @@ public class PerformanceMetricsRecorder {
         cellValue.setCellValue(value);
     }
 
+    /**
+     * Saves the metrics to the Excel file.
+     */
     public void saveToFile() {
         try (FileOutputStream out = new FileOutputStream(this.filePath)) {
             workbook.write(out);
@@ -47,4 +60,15 @@ public class PerformanceMetricsRecorder {
             logger.error("Failed to write metrics to Excel file", e);
         }
     }
+    /**
+     * Saves the metrics to the Excel file.
+     * @param path the path to the Excel file where the metrics will be recorded.
+     */
+    public void saveToFile(String path) throws IOException {
+        try (FileOutputStream fileOut = new FileOutputStream(path)) {
+            workbook.write(fileOut);
+        }
+        workbook.close();
+    }
+
 }

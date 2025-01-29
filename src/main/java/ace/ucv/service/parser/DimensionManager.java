@@ -9,7 +9,7 @@ import java.util.Map;
 import static ace.ucv.utils.Constants.DIMENSIONS_FILE;
 
 /**
- * Created by Andreea Draghici on 12/24/2024
+ * Created by Andreea Draghici on 1/2/2025
  * Name of project: ParallelMatrixMultiplication
  */
 public class DimensionManager {
@@ -22,7 +22,7 @@ public class DimensionManager {
             logger.info("Dimensions read successfully from file.");
             return dimensions;
         } catch (IOException e) {
-            logger.error("Error: Could not read dimensions from file " + DIMENSIONS_FILE, e);
+            logger.error(new StringBuilder().append("Error: Could not read dimensions from file ").append(DIMENSIONS_FILE).toString(), e);
             throw e;
         }
     }
