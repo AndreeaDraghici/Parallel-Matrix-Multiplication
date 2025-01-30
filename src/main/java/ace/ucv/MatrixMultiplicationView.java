@@ -1,5 +1,7 @@
 package ace.ucv;
 
+import ace.ucv.approach.fork_join.ForkJoinStreamMatrixMultiplication;
+import ace.ucv.approach.stream.StreamParallelMultiplication;
 import ace.ucv.model.Matrix;
 import ace.ucv.approach.parallel.ParallelMatrixMultiplication;
 import ace.ucv.approach.strassen.StrassenMatrixMultiplication;
@@ -17,7 +19,10 @@ import java.nio.file.Files;
 import java.util.Random;
 
 public class MatrixMultiplicationView {
-
+    @FXML
+    public RadioButton parallelStreamRadioButton;
+    @FXML
+    public RadioButton forkJoinRadioButton;
     @FXML
     private RadioButton classicSequentialButton;
     @FXML
@@ -99,12 +104,13 @@ public class MatrixMultiplicationView {
     }
 
     private String getSelectedMethod() {
+        if (parallelStreamRadioButton.isSelected()) return "ParallelStream";
+        if (forkJoinRadioButton.isSelected()) return "ForkJoin";
         if (classicSequentialButton.isSelected()) return "Sequential";
         if (parallelButton.isSelected()) return "Parallel";
         if (strassenButton.isSelected()) return "Strassen";
         return null;
     }
-
 
 
     private String performMultiplication(int rowsMin, int rowsMax, int colsMin, int colsMax, String method) {
@@ -138,6 +144,15 @@ public class MatrixMultiplicationView {
             case "Strassen":
                 StrassenMatrixMultiplication strassenMultiplication = new StrassenMatrixMultiplication();
                 result = strassenMultiplication.multiply(matrixA, matrixB);
+                break;
+
+            case "ParallelStream":
+                StreamParallelMultiplication streamMultiplication = new StreamParallelMultiplication();
+                result = streamMultiplication.multiply(matrixA, matrixB);
+                break;
+
+            case "ForkJoin":
+                result = ForkJoinStreamMatrixMultiplication.multiply(matrixA, matrixB);
                 break;
 
             default:
