@@ -96,4 +96,28 @@ public class Matrix {
     public void setCols(int cols) {
         this.cols = cols;
     }
+
+    /**
+     * Returns the value of a matrix element at the specified row and column.
+     *
+     * @param row The row index
+     * @param col The column index
+     * @return The value of the matrix element at the specified row and column
+     */
+    public double getValue(int row, int col) {
+        return data[row][col]; // Access matrix element
+    }
+
+    /**
+     * Sets the value of a matrix element at the specified row and column.
+     *
+     * @param row   The row index
+     * @param col   The column index
+     * @param value The new value to set
+     */
+    public void setValue(int row, int col, int value) {
+        data[row][col] = value; // Modify matrix element
+    }
+
+
 }

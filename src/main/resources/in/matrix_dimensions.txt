@@ -1,4 +1,4 @@
-rowsMin=100
-rowsMax=100
-colsMin=100
-colsMax=100
+rowsMin=50
+rowsMax=50
+colsMin=50
+colsMax=50

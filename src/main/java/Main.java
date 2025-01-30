@@ -1,3 +1,5 @@
+import ace.ucv.approach.fork_join.ForkJoinStreamMatrixMultiplication;
+import ace.ucv.approach.fork_join.RunForkJoinMultiplication;
 import ace.ucv.approach.stream.RunStreamParallelApproach;
 import ace.ucv.model.Matrix;
 import ace.ucv.approach.parallel.RunParallelApproach;
@@ -18,6 +20,7 @@ import java.io.InputStreamReader;
  */
 public class Main {
     private static final Logger logger = LogManager.getLogger(Main.class);
+    public static final int NUM_THREADS = 4;
 
     public static void main(String[] args) {
         DimensionManager dimensionManager = new DimensionManager();
@@ -29,12 +32,13 @@ public class Main {
                 System.out.println("2. Parallel");
                 System.out.println("3. Strassen");
                 System.out.println("4. Stream Parallel");
-                System.out.println("5. Exit");
+                System.out.println("5. Fork-Join");
+                System.out.println("6. Exit");
                 System.out.print("Enter your choice: ");
 
                 String choice = reader.readLine().trim();
                 // Exit the program if the user chooses to do so (option 4)
-                if (choice.equals("5")) {
+                if (choice.equals("6")) {
                     System.out.println("Exiting the program.");
                     break;
                 }
@@ -43,7 +47,9 @@ public class Main {
                     // Generate matrices based on user input and dimensions from file (DIMENSIONS_FILE)
                     final Matrix[] matrices = getMatrices(matrixService, dimensionManager);
 
-                    /* Perform matrix multiplication based on the user's choice */
+                    /*
+                     *Perform matrix multiplication based on the user's choice
+                     */
                     switch (choice) {
                         case "1":
                             runSequentialApproach(matrices);
@@ -59,6 +65,9 @@ public class Main {
 
                         case "4":
                             runStreamParallelApproach(matrices);
+                            break;
+                        case "5":
+                            runForkJoinApproach(matrices);
                             break;
 
                         default:
@@ -108,5 +117,15 @@ public class Main {
         RunStreamParallelApproach streamParallelApproach = new RunStreamParallelApproach();
         streamParallelApproach.runSetup(matrices[0], matrices[1]);
         logger.info("Stream parallel matrix multiplication completed.");
+    }
+
+    private static void runForkJoinApproach(Matrix[] matrices) throws IOException {
+        logger.info("Setting the number of threads for the Fork-Join approach...");
+        ForkJoinStreamMatrixMultiplication.setThreadPoolSize(NUM_THREADS);
+
+        logger.info("Starting fork-join matrix multiplication...");
+        RunForkJoinMultiplication forkJoinMultiplication = new RunForkJoinMultiplication();
+        forkJoinMultiplication.runSetup(matrices[0], matrices[1]);
+        logger.info("Fork-join matrix multiplication completed.");
     }
 }

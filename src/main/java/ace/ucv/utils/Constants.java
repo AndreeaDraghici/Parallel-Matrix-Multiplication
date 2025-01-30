@@ -21,4 +21,6 @@ public class Constants {
     public static final String OUTPUT_STREAM_PARALLEL = "src/main/resources/out/output_stream_parallel.txt";
     public static final String STREAM_PARALLEL_XLSX = "./src/main/resources/out/performance_metrics_stream_parallel.xlsx";
 
+    public static final String OUTPUT_FORK_JOIN = "src/main/resources/out/output_fork_join.txt";
+    public static final String FORK_JOIN_XLSX = "./src/main/resources/out/performance_metrics_fork_join.xlsx";
 }
