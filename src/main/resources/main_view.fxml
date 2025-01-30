@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
@@ -31,53 +32,72 @@
             <VBox spacing="10" style="-fx-padding: 10;">
                 <HBox alignment="CENTER" spacing="10">
                     <Label text="Rows Min:" textFill="#f40606">
-                  <font>
-                     <Font name="System Bold" size="14.0" />
-                  </font></Label>
+                        <font>
+                            <Font name="System Bold" size="14.0" />
+                        </font>
+                    </Label>
                     <TextField fx:id="rowsMinField" />
                     <Label text="Rows Max:" textFill="#ff0101">
-                  <font>
-                     <Font name="System Bold" size="14.0" />
-                  </font></Label>
+                        <font>
+                            <Font name="System Bold" size="14.0" />
+                        </font>
+                    </Label>
                     <TextField fx:id="rowsMaxField" />
                 </HBox>
                 <HBox alignment="CENTER" spacing="10">
                     <Label text="Cols Min:" textFill="RED">
-                  <font>
-                     <Font name="System Bold" size="14.0" />
-                  </font></Label>
+                        <font>
+                            <Font name="System Bold" size="14.0" />
+                        </font>
+                    </Label>
                     <TextField fx:id="colsMinField" />
                     <Label text="Cols Max:" textFill="RED">
-                  <font>
-                     <Font name="System Bold" size="14.0" />
-                  </font></Label>
+                        <font>
+                            <Font name="System Bold" size="14.0" />
+                        </font>
+                    </Label>
                     <TextField fx:id="colsMaxField" />
                 </HBox>
                 <HBox alignment="CENTER" spacing="10">
                     <Label prefHeight="20.0" prefWidth="122.0" text="Algorithm Choice">
-                  <font>
-                     <Font name="System Bold" size="14.0" />
-                  </font></Label>
+                        <font>
+                            <Font name="System Bold" size="14.0" />
+                        </font>
+                    </Label>
                     <VBox spacing="5">
-                        <RadioButton fx:id="classicSequentialButton" text="Sequential Approach" textFill="#1800ef">
-                     <font>
-                        <Font name="System Bold" size="14.0" />
-                     </font></RadioButton>
-                        <RadioButton fx:id="parallelButton" text="Parallel Approach" textFill="#1800ef">
-                     <font>
-                        <Font name="System Bold" size="14.0" />
-                     </font></RadioButton>
-                        <RadioButton fx:id="strassenButton" text="Strassen Approach" textFill="#1800ef">
-                     <font>
-                        <Font name="System Bold" size="14.0" />
-                     </font></RadioButton>
+                        <RadioButton fx:id="classicSequentialButton" text="Sequential Approach" styleClass="rounded-radio-button" textFill="#1800ef">
+                            <font>
+                                <Font name="System Bold" size="14.0" />
+                            </font>
+                        </RadioButton>
+                        <RadioButton fx:id="parallelButton" text="Parallel Approach" styleClass="rounded-radio-button" textFill="#1800ef">
+                            <font>
+                                <Font name="System Bold" size="14.0" />
+                            </font>
+                        </RadioButton>
+                        <RadioButton fx:id="strassenButton" text="Strassen Approach" styleClass="rounded-radio-button" textFill="#1800ef">
+                            <font>
+                                <Font name="System Bold" size="14.0" />
+                            </font>
+                        </RadioButton>
+                        <RadioButton fx:id="parallelStreamRadioButton" text="Parallel Stream Approach" styleClass="rounded-radio-button" textFill="#1800ef">
+                            <font>
+                                <Font name="System Bold" size="14.0" />
+                            </font>
+                        </RadioButton>
+                        <RadioButton fx:id="forkJoinRadioButton" text="Fork-Join Approach" styleClass="rounded-radio-button" textFill="#1800ef">
+                            <font>
+                                <Font name="System Bold" size="14.0" />
+                            </font>
+                        </RadioButton>
                     </VBox>
                 </HBox>
                 <HBox alignment="CENTER" spacing="10">
                     <Button onAction="#startMultiplication" text="Start Multiplication" textAlignment="CENTER">
-                  <font>
-                     <Font name="System Bold" size="14.0" />
-                  </font></Button>
+                        <font>
+                            <Font name="System Bold" size="14.0" />
+                        </font>
+                    </Button>
                 </HBox>
             </VBox>
         </VBox>
@@ -87,13 +107,15 @@
     <bottom>
         <VBox spacing="10" style="-fx-padding: 10;">
             <Label text="Matrix Multiplication Output" textFill="#054814">
-            <font>
-               <Font name="System Bold" size="14.0" />
-            </font></Label>
+                <font>
+                    <Font name="System Bold" size="14.0" />
+                </font>
+            </Label>
             <TextArea fx:id="outputArea" editable="false" style="-fx-font-size: 14; -fx-pref-height: 300;" wrapText="true" VBox.vgrow="ALWAYS">
-            <font>
-               <Font size="14.0" />
-            </font></TextArea>
+                <font>
+                    <Font size="14.0" />
+                </font>
+            </TextArea>
         </VBox>
     </bottom>
 </BorderPane>
